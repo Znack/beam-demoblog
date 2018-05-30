@@ -1,0 +1,8 @@
+.stack-work/
+beam-demoblog.cabal
+*~
+
+.history
+.stack-work
+.vscode
+gen

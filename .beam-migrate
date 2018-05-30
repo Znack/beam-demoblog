@@ -1,0 +1,13 @@
+branches:
+- name: master
+  commit: 863be105-d48b-4680-99f2-985cd9d06a1d
+schemas: []
+head: ref/branch/master
+migrations: []
+module:
+  name: Schema
+  src: .
+databases:
+  beamDemoblog:
+    uri: postgresql://demoblog@localhost:5432/beam_demoblog
+    backend: Database.Beam.Postgres.Migrate
