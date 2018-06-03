@@ -3,6 +3,7 @@
 
 module Schema.Mutate where
 
+import qualified Data.Text as T
 import Database.Beam
 import Database.Beam.Migrate.Backend
 import Database.Beam.Migrate.Generics
@@ -13,6 +14,8 @@ import Database.Beam.Postgres.Syntax
 import qualified Database.PostgreSQL.Simple as Pg
 
 import Schema.Database
+import qualified Schema.Migrations.V0001UserAndAuthor as V0001
+import qualified Schema.Migrations.V0002Categories as V0002
 
 createPgConn =
   Pg.connectPostgreSQL "postgresql://demoblog@localhost:5432/beam_demoblog"
@@ -31,33 +34,46 @@ migrate conn =
 
 printMigration :: Pg.Connection -> IO [()]
 printMigration conn = do
-  Just cmds :: Maybe [MigrationCommand PgCommandSyntax] <-
-    simpleMigration' migrationBackend conn (evaluateDatabase migration)
+  Just cmds :: Maybe [PgCommandSyntax] <-
+    simpleMigration migrationBackend conn (evaluateDatabase migration)
   mapM
-    (\(MigrationCommand (PgCommandSyntax a b) isSafe) ->
-       putStrLn $
-       "> " ++ show isSafe ++ "" ++ show a ++ "\n" ++ show b ++ "\n\n\n")
+    (\(PgCommandSyntax a b) ->
+       putStrLn $ "> " ++ show a ++ "\n" ++ show b ++ "\n\n\n")
     cmds
 
--- showMigrations :: Pg.Connection -> IO [()]
--- showMigrations conn = do
---   Just cmds <- createMigration conn
---   return $ map (runMigrationSilenced . (`upDown` Nothing)) cmds
--- importDbSchema conn = do
---   let cmd = MigrateCmdLine
---   return undefined
-simpleMigration' ::
-     (MonadBeam cmd be handle m, Database be db)
-  => BeamMigrationBackend cmd be handle m
-  -> handle
-  -> CheckedDatabaseSettings be db
-  -> IO (Maybe [MigrationCommand cmd])
-simpleMigration' BeamMigrationBackend { backendGetDbConstraints = getCs
-                                      , backendActionProvider = action
-                                      } hdl db = do
-  pre <- withDatabase hdl getCs
-  let post = collectChecks db
-      solver = heuristicSolver action pre post
-  case finalSolution solver of
-    Solved cmds -> pure (Just cmds)
-    Candidates {} -> pure Nothing
+verboseHooks :: BringUpToDateHooks Pg
+verboseHooks =
+  BringUpToDateHooks
+  { runIrreversibleHook =
+      \a b ->
+        liftIO (print $ "runIrreversibleHook" ++ show a ++ ": " ++ show b) >>
+        pure True
+  , startStepHook =
+      \a b -> liftIO (print $ "startStepHook" ++ show a ++ ": " ++ show b)
+  , endStepHook =
+      \a b -> liftIO (print $ "endStepHook" ++ show a ++ ": " ++ show b)
+  , runCommandHook =
+      \a b -> liftIO (print $ "runCommandHook" ++ show a ++ ": " ++ show b)
+  , queryFailedHook = fail "Log entry query fails"
+  , discontinuousMigrationsHook =
+      \ix ->
+        fail ("Discontinuous migration log: missing migration at " ++ show ix)
+  , logMismatchHook =
+      \ix actual expected ->
+        fail
+          ("Log mismatch at index " ++
+           show ix ++
+           ":\n" ++
+           "  expected: " ++
+           T.unpack expected ++ "\n" ++ "  actual  : " ++ T.unpack actual)
+  , databaseAheadHook =
+      \aheadBy ->
+        fail
+          ("The database is ahead of the known schema by " ++
+           show aheadBy ++ " migration(s)")
+  }
+
+migrateWithHooks conn =
+  runBeamPostgres
+    conn
+    (bringUpToDateWithHooks verboseHooks migrationBackend migration)

@@ -20,7 +20,7 @@ import Database.Beam.Postgres (PgCommandSyntax, Postgres)
 migration ::
      MigrationSteps PgCommandSyntax () (CheckedDatabaseSettings Postgres DemoblogDb)
 migration =
-  migrationStep "Initial commit" V0001.migration >>>
+  migrationStep "Add user and author tables" V0001.migration >>>
   migrationStep "Add category table" V0002.migration
 
 db :: DatabaseSettings Postgres DemoblogDb
