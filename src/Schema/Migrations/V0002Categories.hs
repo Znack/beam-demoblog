@@ -15,7 +15,6 @@ module Schema.Migrations.V0002Categories
 import qualified Schema.Migrations.V0001UserAndAuthor as V0001
 import qualified Schema.Migrations.V0001UserAndAuthor as V0001' hiding
   ( DemoblogDb
-  , migration
   )
 
 import Data.Text (Text)
@@ -80,9 +79,9 @@ migration ::
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
 migration oldDb =
   DemoblogDb <$> preserve (V0001.user oldDb) <*> preserve (V0001.author oldDb) <*>
-  (createTable
-     "category"
-     (Category
-        (field "category_id" serial)
-        (field "title" (varchar (Just 511)) notNull)
-        (CategoryId (field "parent_id" (maybeType serial)))))
+  createTable
+    "category"
+    (Category
+       (field "category_id" serial)
+       (field "title" (varchar (Just 511)) notNull)
+       (CategoryId (field "parent_id" (maybeType serial))))

@@ -30,6 +30,7 @@ dependencies:
 - sqlite-simple
 - beam-migrate
 - beam-postgres
+- postgresql-simple
 
 
 library:

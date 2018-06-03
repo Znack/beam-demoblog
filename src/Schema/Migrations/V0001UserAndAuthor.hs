@@ -89,22 +89,20 @@ instance Database Postgres DemoblogDb
 migration ::
      ()
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
-migration ()
---  year_ <- createDomain "year" integer (check (\yr -> yr >=. 1901 &&. yr <=. 2155))
- = do
+migration () =
   DemoblogDb <$>
-    createTable
-      "user"
-      (User
-         (field "user_id" serial)
-         (field "first_name" (varchar (Just 45)) notNull)
-         (field "last_name" (maybeType $ varchar (Just 45)))
-         (field "avatar" (maybeType $ varchar (Just 511)))
-         (field "created_at" timestamptz (defaultTo_ now_) notNull)
-         (field "is_admin" boolean (defaultTo_ (val_ True)) notNull)) <*>
-    createTable
-      "author"
-      (Author
-         (field "author_id" serial)
-         (field "description" (varchar (Just 50)) notNull)
-         (UserId (field "user_id" smallint unique)))
+  createTable
+    "user"
+    (User
+       (field "user_id" serial)
+       (field "first_name" (varchar (Just 45)) notNull)
+       (field "last_name" (maybeType $ varchar (Just 45)))
+       (field "avatar" (maybeType $ varchar (Just 511)))
+       (field "created_at" timestamptz (defaultTo_ now_) notNull)
+       (field "is_admin" boolean (defaultTo_ (val_ True)) notNull)) <*>
+  createTable
+    "author"
+    (Author
+       (field "author_id" serial)
+       (field "description" (varchar (Just 50)) notNull)
+       (UserId (field "user_id" smallint unique)))

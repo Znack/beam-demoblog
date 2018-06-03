@@ -1,12 +1,24 @@
 branches:
 - name: master
-  commit: 863be105-d48b-4680-99f2-985cd9d06a1d
-schemas: []
+  commit: 0b817a97-5219-49c1-9ff4-3974b59a294f
+schemas:
+- hash: 0b817a97-5219-49c1-9ff4-3974b59a294f
+  committer:
+    email: sergey@MacBook-Pro-Sergej.local
+    full-name: ! "Ð¡ÐµÑ\x80Ð³ÐµÐ¹ Ð§ÐµÑ\x80ÐµÐ¿Ð°Ð½Ð¾Ð²"
+  formats:
+  - haskell
+  - Database.Beam.Postgres.Migrate
+  message: Initial import of beamDemoblog
 head: ref/branch/master
+mode:
+  tmpFile: BeamMigrateSchema.hs
+  hash: 33eb1c0314c16b9f3af527f559bed6da986d002748b66aac5f332ae2b13fd313
+  src: 0b817a97-5219-49c1-9ff4-3974b59a294f
 migrations: []
 module:
-  name: Schema
-  src: .
+  name: Schema.Migrations
+  src: src
 databases:
   beamDemoblog:
     uri: postgresql://demoblog@localhost:5432/beam_demoblog
