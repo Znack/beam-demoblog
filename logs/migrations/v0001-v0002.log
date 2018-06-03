@@ -1,0 +1,67 @@
+> MigrationKeepsDataPgCommandTypeDdl
+PgSyntax <[PgSyntaxPrim Nothing "CREATE TABLE ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "SERIAL, ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "VARCHAR(511) NOT NULL, ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "SERIAL, PRIMARY KEY(",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing") "]>
+
+
+
+> MigrationLosesDataPgCommandTypeDdl
+PgSyntax <[PgSyntaxPrim Nothing "ALTER TABLE ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "DROP COLUMN "]>
+
+
+
+> MigrationKeepsDataPgCommandTypeDdl
+PgSyntax <[PgSyntaxPrim Nothing "ALTER TABLE ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "ADD COLUMN ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "VARCHAR(45)"]>
+
+
+
+> MigrationLosesDataPgCommandTypeDdl
+PgSyntax <[PgSyntaxPrim Nothing "ALTER TABLE ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "DROP COLUMN "]>
+
+
+
+> MigrationKeepsDataPgCommandTypeDdl
+PgSyntax <[PgSyntaxPrim Nothing "ALTER TABLE ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "ADD COLUMN ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "VARCHAR(511)"]>
+
+
+
+> MigrationKeepsDataPgCommandTypeDdl
+PgSyntax <[PgSyntaxPrim Nothing "ALTER TABLE ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "ALTER COLUMN ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "SET NOT NULL"]>
+
+
+
+> MigrationKeepsDataPgCommandTypeDdl
+PgSyntax <[PgSyntaxPrim Nothing "ALTER TABLE ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "ALTER COLUMN ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "DROP NOT NULL"]>
+
+
+
+> MigrationKeepsDataPgCommandTypeDdl
+PgSyntax <[PgSyntaxPrim Nothing "ALTER TABLE ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "ALTER COLUMN ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "DROP NOT NULL"]>
+
+
+
+> MigrationLosesDataPgCommandTypeDdl
+PgSyntax <[PgSyntaxPrim Nothing "ALTER TABLE ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "DROP COLUMN "]>
+
+
+
+> MigrationKeepsDataPgCommandTypeDdl
+PgSyntax <[PgSyntaxPrim Nothing "ALTER TABLE ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "ADD COLUMN ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "VARCHAR(45)"]>
+
+
+
+> MigrationKeepsDataPgCommandTypeDdl
+PgSyntax <[PgSyntaxPrim Nothing "ALTER TABLE ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "ALTER COLUMN ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "SET NOT NULL"]>
+
+
+
+> MigrationLosesDataPgCommandTypeDdl
+PgSyntax <[PgSyntaxPrim Nothing "ALTER TABLE ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "DROP COLUMN "]>
+
+
+
+> MigrationKeepsDataPgCommandTypeDdl
+PgSyntax <[PgSyntaxPrim Nothing "ALTER TABLE ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "ADD COLUMN ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "VARCHAR(50)"]>
+
+
+
+> MigrationKeepsDataPgCommandTypeDdl
+PgSyntax <[PgSyntaxPrim Nothing "ALTER TABLE ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "ALTER COLUMN ",PgSyntaxPrim (Just PgEscapeIdentifier) "",PgSyntaxPrim Nothing "SET NOT NULL"]>
