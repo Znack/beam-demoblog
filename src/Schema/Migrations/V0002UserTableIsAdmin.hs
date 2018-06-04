@@ -8,13 +8,18 @@
 module Schema.Migrations.V0002UserTableIsAdmin
   ( module Schema.Migrations.V0001UserAndAuthor
   , UserT(..)
+  , UserId
+  , PrimaryKey(..)
   , DemoblogDb(..)
   , migration
   ) where
 
-import qualified Schema.Migrations.V0001UserAndAuthor as V0001
+import qualified Schema.Migrations.V0001UserAndAuthor as V0001 hiding
+  ( PrimaryKey(UserId)
+  )
 import Schema.Migrations.V0001UserAndAuthor hiding
   ( DemoblogDb(..)
+  , PrimaryKey(UserId)
   , UserId
   , UserT(..)
   , migration

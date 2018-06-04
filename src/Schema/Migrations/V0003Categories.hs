@@ -8,6 +8,8 @@
 module Schema.Migrations.V0003Categories
   ( module Schema.Migrations.V0002UserTableIsAdmin
   , CategoryT(..)
+  , CategoryId
+  , PrimaryKey(..)
   , DemoblogDb(..)
   , migration
   ) where

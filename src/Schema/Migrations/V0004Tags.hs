@@ -8,6 +8,8 @@
 module Schema.Migrations.V0004Tags
   ( module Schema.Migrations.V0003Categories
   , TagT(..)
+  , TagId
+  , PrimaryKey(..)
   , DemoblogDb(..)
   , migration
   ) where
