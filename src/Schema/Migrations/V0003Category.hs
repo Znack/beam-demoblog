@@ -5,7 +5,7 @@
 {-# LANGUAGE PartialTypeSignatures #-}
 {-# LANGUAGE ImpredicativeTypes #-}
 
-module Schema.Migrations.V0003Categories
+module Schema.Migrations.V0003Category
   ( module Schema.Migrations.V0002UserTableIsAdmin
   , CategoryT(..)
   , CategoryId

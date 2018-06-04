@@ -16,7 +16,7 @@ import qualified Database.PostgreSQL.Simple as Pg
 import Schema.Database
 import qualified Schema.Migrations.V0001UserAndAuthor as V0001
 import qualified Schema.Migrations.V0002UserTableIsAdmin as V0002
-import qualified Schema.Migrations.V0003Categories as V0003
+import qualified Schema.Migrations.V0003Category as V0003
 
 createPgConn =
   Pg.connectPostgreSQL "postgresql://demoblog@localhost:5432/beam_demoblog"

@@ -5,8 +5,8 @@
 {-# LANGUAGE PartialTypeSignatures #-}
 {-# LANGUAGE ImpredicativeTypes #-}
 
-module Schema.Migrations.V0004Tags
-  ( module Schema.Migrations.V0003Categories
+module Schema.Migrations.V0004Tag
+  ( module Schema.Migrations.V0003Category
   , TagT(..)
   , TagId
   , PrimaryKey(..)
@@ -14,8 +14,8 @@ module Schema.Migrations.V0004Tags
   , migration
   ) where
 
-import qualified Schema.Migrations.V0003Categories as V0003
-import Schema.Migrations.V0003Categories hiding (DemoblogDb(..), migration) -- to make reexport works
+import qualified Schema.Migrations.V0003Category as V0003
+import Schema.Migrations.V0003Category hiding (DemoblogDb(..), migration) -- to make reexport works
 
 import Data.Text (Text)
 import Data.Time (LocalTime)
