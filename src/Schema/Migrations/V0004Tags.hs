@@ -5,16 +5,15 @@
 {-# LANGUAGE PartialTypeSignatures #-}
 {-# LANGUAGE ImpredicativeTypes #-}
 
-module Schema.Migrations.V0003Tags
-  ( module V0002'
+module Schema.Migrations.V0004Tags
+  ( module Schema.Migrations.V0003Categories
   , TagT(..)
   , DemoblogDb(..)
   , migration
   ) where
 
-import qualified Schema.Migrations.V0001UserAndAuthor as V0001
-import qualified Schema.Migrations.V0002Categories as V0002
-import qualified Schema.Migrations.V0002Categories as V0002' hiding (DemoblogDb)
+import qualified Schema.Migrations.V0003Categories as V0003
+import Schema.Migrations.V0003Categories hiding (DemoblogDb(..), migration) -- to make reexport works
 
 import Data.Text (Text)
 import Data.Time (LocalTime)
@@ -60,9 +59,9 @@ Tag (LensFor tagId) (LensFor tagTitle) = tableLenses
 -- === DATABASE DEFINITON ===
 --
 data DemoblogDb f = DemoblogDb
-  { user :: f (TableEntity V0001.UserT)
-  , author :: f (TableEntity V0001.AuthorT)
-  , category :: f (TableEntity V0002.CategoryT)
+  { user :: f (TableEntity V0003.UserT)
+  , author :: f (TableEntity V0003.AuthorT)
+  , category :: f (TableEntity V0003.CategoryT)
   , tag :: f (TableEntity TagT)
   } deriving (Generic)
 
@@ -72,11 +71,11 @@ instance Database Postgres DemoblogDb
 -- === CURRENT MIGRATIONS ===
 --
 migration ::
-     CheckedDatabaseSettings Postgres V0002.DemoblogDb
+     CheckedDatabaseSettings Postgres V0003.DemoblogDb
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
 migration oldDb =
-  DemoblogDb <$> preserve (V0002.user oldDb) <*> preserve (V0002.author oldDb) <*>
-  preserve (V0002.category oldDb) <*>
+  DemoblogDb <$> preserve (V0003.user oldDb) <*> preserve (V0003.author oldDb) <*>
+  preserve (V0003.category oldDb) <*>
   createTable
     "tag"
     (Tag (field "tag_id" serial) (field "title" (varchar (Just 255)) notNull))

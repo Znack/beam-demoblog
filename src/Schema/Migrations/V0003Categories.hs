@@ -5,17 +5,18 @@
 {-# LANGUAGE PartialTypeSignatures #-}
 {-# LANGUAGE ImpredicativeTypes #-}
 
-module Schema.Migrations.V0002Categories
-  ( module V0001'
+module Schema.Migrations.V0003Categories
+  ( module Schema.Migrations.V0002UserTableIsAdmin
   , CategoryT(..)
   , DemoblogDb(..)
   , migration
   ) where
 
-import qualified Schema.Migrations.V0001UserAndAuthor as V0001
-import qualified Schema.Migrations.V0001UserAndAuthor as V0001' hiding
-  ( DemoblogDb
-  )
+import qualified Schema.Migrations.V0002UserTableIsAdmin as V0002
+import Schema.Migrations.V0002UserTableIsAdmin hiding
+  ( DemoblogDb(..)
+  , migration
+  ) -- to make reexport works
 
 import Data.Text (Text)
 import Data.Time (LocalTime)
@@ -64,8 +65,8 @@ Category (LensFor categoryId) (LensFor categoryTitle) (CategoryId (LensFor categ
 -- === DATABASE DEFINITON ===
 --
 data DemoblogDb f = DemoblogDb
-  { user :: f (TableEntity V0001.UserT)
-  , author :: f (TableEntity V0001.AuthorT)
+  { user :: f (TableEntity V0002.UserT)
+  , author :: f (TableEntity V0002.AuthorT)
   , category :: f (TableEntity CategoryT)
   } deriving (Generic)
 
@@ -75,10 +76,10 @@ instance Database Postgres DemoblogDb
 -- === CURRENT MIGRATIONS ===
 --
 migration ::
-     CheckedDatabaseSettings Postgres V0001.DemoblogDb
+     CheckedDatabaseSettings Postgres V0002.DemoblogDb
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
 migration oldDb =
-  DemoblogDb <$> preserve (V0001.user oldDb) <*> preserve (V0001.author oldDb) <*>
+  DemoblogDb <$> preserve (V0002.user oldDb) <*> preserve (V0002.author oldDb) <*>
   createTable
     "category"
     (Category
