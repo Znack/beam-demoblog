@@ -18,11 +18,8 @@ import qualified Schema.Migrations.V0001UserAndAuthor as V0001
 import qualified Schema.Migrations.V0002UserTableIsAdmin as V0002
 import qualified Schema.Migrations.V0003Category as V0003
 
-createPgConn =
-  Pg.connectPostgreSQL "postgresql://demoblog@localhost:5432/beam_demoblog"
-
-create :: Pg.Connection -> IO ()
-create conn =
+createDbSchema :: Pg.Connection -> IO ()
+createDbSchema conn =
   runBeamPostgres
     conn
     (createSchema migrationBackend (evaluateDatabase migration))

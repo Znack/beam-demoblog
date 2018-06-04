@@ -9,6 +9,7 @@ module Schema.Migrations.V0001UserAndAuthor
   ( UserT(..)
   , UserId
   , AuthorT(..)
+  , AuthorId
   , PrimaryKey(..)
   , DemoblogDb(..)
   , migration

@@ -1,4 +1,9 @@
-module Schema.Database where
+module Schema.Database
+  ( module Schema.Migrations.V0006Comment
+  , migration
+  , checkedDb
+  , db
+  ) where
 
 import qualified Schema.Migrations.V0001UserAndAuthor as V0001 (migration)
 import qualified Schema.Migrations.V0002UserTableIsAdmin as V0002 (migration)
@@ -31,5 +36,8 @@ migration =
   migrationStep "Add post table" V0005.migration >>>
   migrationStep "Add comment table" V0006.migration
 
+checkedDb :: CheckedDatabaseSettings Postgres DemoblogDb
+checkedDb = evaluateDatabase migration
+
 db :: DatabaseSettings Postgres DemoblogDb
-db = unCheckDatabase (evaluateDatabase migration)
+db = unCheckDatabase checkedDb
