@@ -26,12 +26,6 @@ create conn =
     conn
     (createSchema migrationBackend (evaluateDatabase migration))
 
-migrate :: Pg.Connection -> IO ()
-migrate conn =
-  runBeamPostgres
-    conn
-    (autoMigrate migrationBackend (evaluateDatabase migration))
-
 printMigration :: Pg.Connection -> IO [()]
 printMigration conn = do
   Just cmds :: Maybe [PgCommandSyntax] <-
@@ -44,16 +38,13 @@ printMigration conn = do
 verboseHooks :: BringUpToDateHooks Pg
 verboseHooks =
   BringUpToDateHooks
-  { runIrreversibleHook =
-      \a b ->
-        liftIO (print $ "runIrreversibleHook" ++ show a ++ ": " ++ show b) >>
-        pure True
+  { runIrreversibleHook = pure True
   , startStepHook =
-      \a b -> liftIO (print $ "startStepHook" ++ show a ++ ": " ++ show b)
+      \a b -> liftIO (print $ "startStepHook N" ++ show a ++ ": " ++ show b)
   , endStepHook =
-      \a b -> liftIO (print $ "endStepHook" ++ show a ++ ": " ++ show b)
+      \a b -> liftIO (print $ "endStepHook N" ++ show a ++ ": " ++ show b)
   , runCommandHook =
-      \a b -> liftIO (print $ "runCommandHook" ++ show a ++ ": " ++ show b)
+      \a b -> liftIO (print $ "runCommandHook N" ++ show a ++ ": " ++ show b)
   , queryFailedHook = fail "Log entry query fails"
   , discontinuousMigrationsHook =
       \ix ->
