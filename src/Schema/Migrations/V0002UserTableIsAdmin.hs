@@ -69,8 +69,8 @@ User (LensFor userId) (LensFor userFirstName) (LensFor userLastName) (LensFor us
 -- === DATABASE DEFINITON ===
 --
 data DemoblogDb f = DemoblogDb
-  { user :: f (TableEntity UserT)
-  , author :: f (TableEntity AuthorT)
+  { _user :: f (TableEntity UserT)
+  , _author :: f (TableEntity AuthorT)
   } deriving (Generic)
 
 instance Database Postgres DemoblogDb
@@ -79,9 +79,9 @@ migration ::
      CheckedDatabaseSettings Postgres V0001.DemoblogDb
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
 migration oldDb =
-  DemoblogDb <$> alterUserTable <*> preserve (V0001.author oldDb)
+  DemoblogDb <$> alterUserTable <*> preserve (V0001._author oldDb)
   where
-    alterUserTable = alterTable (V0001.user oldDb) tableMigration
+    alterUserTable = alterTable (V0001._user oldDb) tableMigration
     tableMigration oldTable =
       User
         (V0001._userId oldTable)

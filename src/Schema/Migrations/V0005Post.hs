@@ -64,11 +64,11 @@ Post (LensFor postId) (LensFor postTitle) (LensFor postContent) (V0004.AuthorId 
 -- === DATABASE DEFINITON ===
 --
 data DemoblogDb f = DemoblogDb
-  { user :: f (TableEntity V0004.UserT)
-  , author :: f (TableEntity V0004.AuthorT)
-  , category :: f (TableEntity V0004.CategoryT)
-  , tag :: f (TableEntity V0004.TagT)
-  , post :: f (TableEntity PostT)
+  { _user :: f (TableEntity V0004.UserT)
+  , _author :: f (TableEntity V0004.AuthorT)
+  , _category :: f (TableEntity V0004.CategoryT)
+  , _tag :: f (TableEntity V0004.TagT)
+  , _post :: f (TableEntity PostT)
   } deriving (Generic)
 
 instance Database Postgres DemoblogDb
@@ -80,9 +80,9 @@ migration ::
      CheckedDatabaseSettings Postgres V0004.DemoblogDb
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
 migration oldDb =
-  DemoblogDb <$> preserve (V0004.user oldDb) <*> preserve (V0004.author oldDb) <*>
-  preserve (V0004.category oldDb) <*>
-  preserve (V0004.tag oldDb) <*>
+  DemoblogDb <$> preserve (V0004._user oldDb) <*> preserve (V0004._author oldDb) <*>
+  preserve (V0004._category oldDb) <*>
+  preserve (V0004._tag oldDb) <*>
   createTable
     "post"
     (Post

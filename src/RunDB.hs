@@ -8,3 +8,5 @@ createPgConn =
 
 runDB :: Pg a -> Connection -> IO a
 runDB query conn = runBeamPostgresDebug putStrLn conn query
+
+runDBWithSeparateConn query = createPgConn >>= runDB query

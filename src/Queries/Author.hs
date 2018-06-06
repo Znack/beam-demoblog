@@ -11,13 +11,8 @@ import Queries.Generic.GetById
 import RunDB
 import Schema.Database
 
-getAll :: IO ()
-getAll =
-  createPgConn >>= runDB (queryGetAll author) >>=
-  mapM_ (liftIO . putStrLn . show)
+getAll :: Pg [AuthorT Identity]
+getAll = queryGetAll _author
 
-getById :: Integer -> IO ()
-getById idval =
-  createPgConn >>=
-  runDB (queryGetByPK author (val_ $ AuthorId (fromInteger idval))) >>=
-  mapM_ (liftIO . putStrLn . show)
+getById :: Int -> Pg (Maybe (AuthorT Identity))
+getById = queryGetByPK _author AuthorId

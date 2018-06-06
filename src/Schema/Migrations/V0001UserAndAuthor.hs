@@ -87,8 +87,8 @@ Author (LensFor authorId) (LensFor authorDescription) (UserId (LensFor authorUse
 -- === DATABASE DEFINITON ===
 --
 data DemoblogDb f = DemoblogDb
-  { user :: f (TableEntity UserT)
-  , author :: f (TableEntity AuthorT)
+  { _user :: f (TableEntity UserT)
+  , _author :: f (TableEntity AuthorT)
   } deriving (Generic)
 
 instance Database Postgres DemoblogDb

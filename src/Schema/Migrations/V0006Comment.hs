@@ -63,12 +63,12 @@ Comment (LensFor commentId) (LensFor commentContent) (V0005.UserId (LensFor comm
 -- === DATABASE DEFINITON ===
 --
 data DemoblogDb f = DemoblogDb
-  { user :: f (TableEntity V0005.UserT)
-  , author :: f (TableEntity V0005.AuthorT)
-  , category :: f (TableEntity V0005.CategoryT)
-  , tag :: f (TableEntity V0005.TagT)
-  , post :: f (TableEntity V0005.PostT)
-  , comment :: f (TableEntity CommentT)
+  { _user :: f (TableEntity V0005.UserT)
+  , _author :: f (TableEntity V0005.AuthorT)
+  , _category :: f (TableEntity V0005.CategoryT)
+  , _tag :: f (TableEntity V0005.TagT)
+  , _post :: f (TableEntity V0005.PostT)
+  , _comment :: f (TableEntity CommentT)
   } deriving (Generic)
 
 instance Database Postgres DemoblogDb
@@ -80,10 +80,10 @@ migration ::
      CheckedDatabaseSettings Postgres V0005.DemoblogDb
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
 migration oldDb =
-  DemoblogDb <$> preserve (V0005.user oldDb) <*> preserve (V0005.author oldDb) <*>
-  preserve (V0005.category oldDb) <*>
-  preserve (V0005.tag oldDb) <*>
-  preserve (V0005.post oldDb) <*>
+  DemoblogDb <$> preserve (V0005._user oldDb) <*> preserve (V0005._author oldDb) <*>
+  preserve (V0005._category oldDb) <*>
+  preserve (V0005._tag oldDb) <*>
+  preserve (V0005._post oldDb) <*>
   createTable
     "comment"
     (Comment

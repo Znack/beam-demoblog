@@ -67,9 +67,9 @@ Category (LensFor categoryId) (LensFor categoryTitle) (CategoryId (LensFor categ
 -- === DATABASE DEFINITON ===
 --
 data DemoblogDb f = DemoblogDb
-  { user :: f (TableEntity V0002.UserT)
-  , author :: f (TableEntity V0002.AuthorT)
-  , category :: f (TableEntity CategoryT)
+  { _user :: f (TableEntity V0002.UserT)
+  , _author :: f (TableEntity V0002.AuthorT)
+  , _category :: f (TableEntity CategoryT)
   } deriving (Generic)
 
 instance Database Postgres DemoblogDb
@@ -81,7 +81,7 @@ migration ::
      CheckedDatabaseSettings Postgres V0002.DemoblogDb
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
 migration oldDb =
-  DemoblogDb <$> preserve (V0002.user oldDb) <*> preserve (V0002.author oldDb) <*>
+  DemoblogDb <$> preserve (V0002._user oldDb) <*> preserve (V0002._author oldDb) <*>
   createTable
     "category"
     (Category

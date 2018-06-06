@@ -16,7 +16,7 @@ import Schema.Migrations.V0006Comment hiding (migration)
 
 import Control.Arrow
 
-import Database.Beam (DatabaseSettings)
+import Database.Beam
 import Database.Beam.Migrate.Types
   ( CheckedDatabaseSettings
   , MigrationSteps
@@ -41,3 +41,6 @@ checkedDb = evaluateDatabase migration
 
 db :: DatabaseSettings Postgres DemoblogDb
 db = unCheckDatabase checkedDb
+
+DemoblogDb (TableLens user) (TableLens author) (TableLens category) (TableLens tag) (TableLens post) (TableLens comment) =
+  dbLenses

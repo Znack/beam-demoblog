@@ -9,10 +9,8 @@ import Queries.Generic.GetById
 import RunDB
 import Schema.Database
 
-getAll :: IO [UserT Identity]
-getAll = createPgConn >>= runDB (queryGetAll user)
+getAll :: Pg [UserT Identity]
+getAll = queryGetAll _user
 
-getById :: Integer -> IO ()
-getById idval =
-  createPgConn >>= runDB (queryGetByPK user (val_ $ UserId (fromInteger idval))) >>=
-  mapM_ (liftIO . putStrLn . show)
+getById :: Int -> Pg (Maybe (UserT Identity))
+getById = queryGetByPK _user UserId

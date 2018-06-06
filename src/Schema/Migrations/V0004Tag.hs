@@ -61,10 +61,10 @@ Tag (LensFor tagId) (LensFor tagTitle) = tableLenses
 -- === DATABASE DEFINITON ===
 --
 data DemoblogDb f = DemoblogDb
-  { user :: f (TableEntity V0003.UserT)
-  , author :: f (TableEntity V0003.AuthorT)
-  , category :: f (TableEntity V0003.CategoryT)
-  , tag :: f (TableEntity TagT)
+  { _user :: f (TableEntity V0003.UserT)
+  , _author :: f (TableEntity V0003.AuthorT)
+  , _category :: f (TableEntity V0003.CategoryT)
+  , _tag :: f (TableEntity TagT)
   } deriving (Generic)
 
 instance Database Postgres DemoblogDb
@@ -76,8 +76,8 @@ migration ::
      CheckedDatabaseSettings Postgres V0003.DemoblogDb
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
 migration oldDb =
-  DemoblogDb <$> preserve (V0003.user oldDb) <*> preserve (V0003.author oldDb) <*>
-  preserve (V0003.category oldDb) <*>
+  DemoblogDb <$> preserve (V0003._user oldDb) <*> preserve (V0003._author oldDb) <*>
+  preserve (V0003._category oldDb) <*>
   createTable
     "tag"
     (Tag (field "tag_id" serial) (field "title" (varchar (Just 255)) notNull))
