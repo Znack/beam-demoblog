@@ -19,9 +19,7 @@ import Schema.Migrations.V0001UserAndAuthor hiding
   , User
   , UserId
   , UserT(..)
-  , author
   , migration
-  , user
   , userAvatar
   , userCreatedAt
   , userFirstName
@@ -81,15 +79,13 @@ data DemoblogDb f = DemoblogDb
 
 instance Database Postgres DemoblogDb
 
-DemoblogDb (TableLens user) (TableLens author) = dbLenses
-
 migration ::
      CheckedDatabaseSettings Postgres V0001.DemoblogDb
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
 migration oldDb =
-  DemoblogDb <$> alterUserTable <*> preserve (oldDb ^. V0001.author)
+  DemoblogDb <$> alterUserTable <*> preserve (V0001._author oldDb)
   where
-    alterUserTable = alterTable (oldDb ^. V0001.user) tableMigration
+    alterUserTable = alterTable (V0001._user oldDb) tableMigration
     tableMigration oldTable =
       User
         (V0001._userId oldTable)

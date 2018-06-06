@@ -1,4 +1,4 @@
-module Queries.Author where
+module Queries.Tag where
 
 import Database.Beam
 import Database.Beam.Backend.SQL
@@ -12,11 +12,11 @@ import Queries.Generic.GetById
 import RunDB
 import Schema.Database
 
-getAll :: Pg [AuthorT Identity]
-getAll = queryGetAll _author
+getAll :: Pg [TagT Identity]
+getAll = queryGetAll _tag
 
-getById :: Int -> Pg (Maybe (AuthorT Identity))
-getById = queryGetByPK _author AuthorId
+getById :: Int -> Pg (Maybe (TagT Identity))
+getById = queryGetByPK _tag TagId
 
-createAuthor :: Author -> Pg (Maybe (AuthorT Identity))
-createAuthor = create _author
+createTag :: Tag -> Pg (Maybe (TagT Identity))
+createTag = create _tag

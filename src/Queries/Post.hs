@@ -1,4 +1,4 @@
-module Queries.Author where
+module Queries.Post where
 
 import Database.Beam
 import Database.Beam.Backend.SQL
@@ -12,11 +12,11 @@ import Queries.Generic.GetById
 import RunDB
 import Schema.Database
 
-getAll :: Pg [AuthorT Identity]
-getAll = queryGetAll _author
+getAll :: Pg [PostT Identity]
+getAll = queryGetAll _post
 
-getById :: Int -> Pg (Maybe (AuthorT Identity))
-getById = queryGetByPK _author AuthorId
+getById :: Int -> Pg (Maybe (PostT Identity))
+getById = queryGetByPK _post PostId
 
-createAuthor :: Author -> Pg (Maybe (AuthorT Identity))
-createAuthor = create _author
+createPost :: Post -> Pg (Maybe (PostT Identity))
+createPost = create _post

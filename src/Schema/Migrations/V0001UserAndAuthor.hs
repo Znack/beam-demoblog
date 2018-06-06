@@ -85,8 +85,6 @@ data DemoblogDb f = DemoblogDb
 
 instance Database Postgres DemoblogDb
 
-DemoblogDb (TableLens user) (TableLens author) = dbLenses
-
 migration ::
      ()
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
