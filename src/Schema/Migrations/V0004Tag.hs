@@ -7,16 +7,19 @@
 
 module Schema.Migrations.V0004Tag
   ( module Schema.Migrations.V0003Category
-  , TagT(..)
-  , TagId
-  , PrimaryKey(..)
-  , DemoblogDb(..)
-  , migration
+  , module Schema.Migrations.V0004Tag
   ) where
 
 import qualified Schema.Migrations.V0003Category as V0003
-import Schema.Migrations.V0003Category hiding (DemoblogDb(..), migration) -- to make reexport works
+import Schema.Migrations.V0003Category hiding
+  ( DemoblogDb(..)
+  , author
+  , category
+  , migration
+  , user
+  ) -- to make reexport works
 
+import Control.Lens
 import Data.Text (Text)
 import Data.Time (LocalTime)
 
@@ -69,6 +72,9 @@ data DemoblogDb f = DemoblogDb
 
 instance Database Postgres DemoblogDb
 
+DemoblogDb (TableLens user) (TableLens author) (TableLens category) (TableLens tag) =
+  dbLenses
+
 --
 -- === CURRENT MIGRATIONS ===
 --
@@ -76,8 +82,9 @@ migration ::
      CheckedDatabaseSettings Postgres V0003.DemoblogDb
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
 migration oldDb =
-  DemoblogDb <$> preserve (V0003._user oldDb) <*> preserve (V0003._author oldDb) <*>
-  preserve (V0003._category oldDb) <*>
+  DemoblogDb <$> preserve (oldDb ^. V0003.user) <*>
+  preserve (oldDb ^. V0003.author) <*>
+  preserve (oldDb ^. V0003.category) <*>
   createTable
     "tag"
     (Tag (field "tag_id" serial) (field "title" (varchar (Just 255)) notNull))

@@ -7,11 +7,7 @@
 
 module Schema.Migrations.V0002UserTableIsAdmin
   ( module Schema.Migrations.V0001UserAndAuthor
-  , UserT(..)
-  , UserId
-  , PrimaryKey(..)
-  , DemoblogDb(..)
-  , migration
+  , module Schema.Migrations.V0002UserTableIsAdmin
   ) where
 
 import qualified Schema.Migrations.V0001UserAndAuthor as V0001 hiding
@@ -20,11 +16,21 @@ import qualified Schema.Migrations.V0001UserAndAuthor as V0001 hiding
 import Schema.Migrations.V0001UserAndAuthor hiding
   ( DemoblogDb(..)
   , PrimaryKey(UserId)
+  , User
   , UserId
   , UserT(..)
+  , author
   , migration
-  ) -- to make reexport works
+  , user
+  , userAvatar
+  , userCreatedAt
+  , userFirstName
+  , userId
+  , userIsAdmin
+  , userLastName
+  )
 
+import Control.Lens
 import Data.Text (Text)
 import Data.Time (LocalTime)
 
@@ -75,13 +81,15 @@ data DemoblogDb f = DemoblogDb
 
 instance Database Postgres DemoblogDb
 
+DemoblogDb (TableLens user) (TableLens author) = dbLenses
+
 migration ::
      CheckedDatabaseSettings Postgres V0001.DemoblogDb
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
 migration oldDb =
-  DemoblogDb <$> alterUserTable <*> preserve (V0001._author oldDb)
+  DemoblogDb <$> alterUserTable <*> preserve (oldDb ^. V0001.author)
   where
-    alterUserTable = alterTable (V0001._user oldDb) tableMigration
+    alterUserTable = alterTable (oldDb ^. V0001.user) tableMigration
     tableMigration oldTable =
       User
         (V0001._userId oldTable)

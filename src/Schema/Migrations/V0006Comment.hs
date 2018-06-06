@@ -7,16 +7,22 @@
 
 module Schema.Migrations.V0006Comment
   ( module Schema.Migrations.V0005Post
-  , CommentT(..)
-  , CommentId
-  , PrimaryKey(..)
-  , DemoblogDb(..)
-  , migration
+  , module Schema.Migrations.V0006Comment
   ) where
 
 import qualified Schema.Migrations.V0005Post as V0005
-import Schema.Migrations.V0005Post hiding (DemoblogDb(..), migration) -- to make reexport works
+import Schema.Migrations.V0005Post hiding
+  ( DemoblogDb(..)
+  , author
+  , category
+  , comment -- to make reexport works
+  , migration
+  , post
+  , tag
+  , user
+  )
 
+import Control.Lens
 import Data.Text (Text)
 import Data.Time (LocalTime)
 
@@ -73,17 +79,21 @@ data DemoblogDb f = DemoblogDb
 
 instance Database Postgres DemoblogDb
 
---
+DemoblogDb (TableLens user) (TableLens author) (TableLens category) (TableLens tag) (TableLens post) (TableLens comment) =
+  dbLenses
+  --
+
 -- === CURRENT MIGRATIONS ===
 --
 migration ::
      CheckedDatabaseSettings Postgres V0005.DemoblogDb
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
 migration oldDb =
-  DemoblogDb <$> preserve (V0005._user oldDb) <*> preserve (V0005._author oldDb) <*>
-  preserve (V0005._category oldDb) <*>
-  preserve (V0005._tag oldDb) <*>
-  preserve (V0005._post oldDb) <*>
+  DemoblogDb <$> preserve (oldDb ^. V0005.user) <*>
+  preserve (oldDb ^. V0005.author) <*>
+  preserve (oldDb ^. V0005.category) <*>
+  preserve (oldDb ^. V0005.tag) <*>
+  preserve (oldDb ^. V0005.post) <*>
   createTable
     "comment"
     (Comment

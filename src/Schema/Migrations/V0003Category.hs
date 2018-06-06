@@ -7,19 +7,18 @@
 
 module Schema.Migrations.V0003Category
   ( module Schema.Migrations.V0002UserTableIsAdmin
-  , CategoryT(..)
-  , CategoryId
-  , PrimaryKey(..)
-  , DemoblogDb(..)
-  , migration
+  , module Schema.Migrations.V0003Category
   ) where
 
 import qualified Schema.Migrations.V0002UserTableIsAdmin as V0002
 import Schema.Migrations.V0002UserTableIsAdmin hiding
   ( DemoblogDb(..)
+  , author
   , migration
+  , user
   ) -- to make reexport works
 
+import Control.Lens
 import Data.Text (Text)
 import Data.Time (LocalTime)
 
@@ -74,6 +73,8 @@ data DemoblogDb f = DemoblogDb
 
 instance Database Postgres DemoblogDb
 
+DemoblogDb (TableLens user) (TableLens author) (TableLens category) = dbLenses
+
 --
 -- === CURRENT MIGRATIONS ===
 --
@@ -81,7 +82,8 @@ migration ::
      CheckedDatabaseSettings Postgres V0002.DemoblogDb
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
 migration oldDb =
-  DemoblogDb <$> preserve (V0002._user oldDb) <*> preserve (V0002._author oldDb) <*>
+  DemoblogDb <$> preserve (oldDb ^. V0002.user) <*>
+  preserve (oldDb ^. V0002.author) <*>
   createTable
     "category"
     (Category

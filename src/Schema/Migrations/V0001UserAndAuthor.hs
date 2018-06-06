@@ -5,15 +5,7 @@
 {-# LANGUAGE PartialTypeSignatures #-}
 {-# LANGUAGE ImpredicativeTypes #-}
 
-module Schema.Migrations.V0001UserAndAuthor
-  ( UserT(..)
-  , UserId
-  , AuthorT(..)
-  , AuthorId
-  , PrimaryKey(..)
-  , DemoblogDb(..)
-  , migration
-  ) where
+module Schema.Migrations.V0001UserAndAuthor where
 
 import Data.Text (Text)
 import Data.Time (LocalTime)
@@ -92,6 +84,8 @@ data DemoblogDb f = DemoblogDb
   } deriving (Generic)
 
 instance Database Postgres DemoblogDb
+
+DemoblogDb (TableLens user) (TableLens author) = dbLenses
 
 migration ::
      ()
