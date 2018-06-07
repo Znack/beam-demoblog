@@ -23,6 +23,7 @@ dependencies:
 - base >= 4.7 && < 5
 - text
 - time
+- transformers
 - mtl
 - lens
 - beam-core
@@ -42,6 +43,7 @@ library:
   - FlexibleContexts 
   - FlexibleInstances
   - TypeFamilies
+  - ScopedTypeVariables
   - TypeApplications
 
 executables:
