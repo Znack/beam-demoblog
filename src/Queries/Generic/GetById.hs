@@ -23,14 +23,13 @@ selectQueryFilteredByPk tableSelector idvalue =
 
 selectByPK ::
      ( Table table
-     , Integral a
      , Num b
      , FieldsFulfillConstraint (HasSqlEqualityCheck PgExpressionSyntax) (PrimaryKey table)
      , FieldsFulfillConstraint (HasSqlValueSyntax PgValueSyntax) (PrimaryKey table)
      )
   => TableSelector table
   -> (b -> PrimaryKey table Identity)
-  -> a
+  -> Int
   -> SqlSelect PgSelectSyntax (table Identity)
 selectByPK tableSelector pkConstructor =
   select .
@@ -38,7 +37,6 @@ selectByPK tableSelector pkConstructor =
 
 queryGetByPK ::
      ( Table table
-     , Integral a
      , Num b
      , FieldsFulfillConstraint (HasSqlEqualityCheck PgExpressionSyntax) (PrimaryKey table)
      , FieldsFulfillConstraint (HasSqlValueSyntax PgValueSyntax) (PrimaryKey table)
@@ -46,7 +44,7 @@ queryGetByPK ::
      )
   => TableSelector table
   -> (b -> PrimaryKey table Identity)
-  -> a
+  -> Int
   -> Pg (Maybe (table Identity))
 queryGetByPK tableSelector pkConstructor =
   runSelectReturningOne . selectByPK tableSelector pkConstructor
