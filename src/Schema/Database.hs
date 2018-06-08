@@ -3,6 +3,7 @@ module Schema.Database
   , migration
   , checkedDb
   , db
+  , TableSelector
   ) where
 
 import qualified Schema.Migrations.V0001UserAndAuthor as V0001 (migration)
@@ -46,3 +47,6 @@ db = unCheckDatabase checkedDb
 
 DemoblogDb (TableLens user) (TableLens author) (TableLens category) (TableLens tag) (TableLens post) (TableLens comment) (TableLens tagOfPost) =
   dbLenses
+
+type TableSelector table
+   = (DatabaseSettings Postgres DemoblogDb -> DatabaseEntity Postgres DemoblogDb (TableEntity table))

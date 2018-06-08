@@ -3,15 +3,31 @@ module Queries.Generic.GetAll where
 import Database.Beam
 import Database.Beam.Backend.SQL
 import Database.Beam.Postgres
+import Database.Beam.Postgres.Syntax
+
+import GHC.Generics
 
 import RunDB
 import Schema.Database
 
 selectQueryAll ::
-     (Table table, IsSql92SelectSyntax select)
-  => (DatabaseSettings Postgres DemoblogDb -> DatabaseEntity Postgres DemoblogDb (TableEntity table))
-  -> Q select DemoblogDb s (table (QExpr (Sql92SelectTableExpressionSyntax (Sql92SelectSelectTableSyntax select)) s))
+     (Table table)
+  => TableSelector table
+  -> Q PgSelectSyntax DemoblogDb s (table (QExpr PgExpressionSyntax s))
 selectQueryAll tableSelector = all_ (tableSelector db)
 
-queryGetAll tableSelector =
-  runSelectReturningList . select . selectQueryAll $ tableSelector
+selectAll ::
+     (Table table)
+  => TableSelector table
+  -> SqlSelect PgSelectSyntax (table Identity)
+selectAll = select . selectQueryAll
+
+queryGetAll ::
+     ( Table table
+     , Generic (table Identity)
+     , Generic (table Exposed)
+     , FromBackendRow Postgres (table Identity)
+     )
+  => TableSelector table
+  -> Pg [table Identity]
+queryGetAll = runSelectReturningList . selectAll
