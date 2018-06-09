@@ -52,7 +52,6 @@ User (LensFor userId) (LensFor userFirstName) (LensFor userLastName) (LensFor us
 data AuthorT f = Author
   { _authorId :: Columnar f (SqlSerial Int)
   , _authorDescription :: Columnar f Text
-  , _authorUserId :: PrimaryKey UserT f
   } deriving (Generic, Beamable)
 
 type Author = AuthorT Identity
@@ -72,8 +71,7 @@ deriving instance Show (PrimaryKey AuthorT Identity)
 
 deriving instance Eq (PrimaryKey AuthorT Identity)
 
-Author (LensFor authorId) (LensFor authorDescription) (UserId (LensFor authorUserId)) =
-  tableLenses
+Author (LensFor authorId) (LensFor authorDescription) = tableLenses
 
 --
 -- === DATABASE DEFINITON ===
@@ -102,5 +100,4 @@ migration () =
     "author"
     (Author
        (field "author_id" serial)
-       (field "description" (varchar (Just 50)) notNull)
-       (UserId (field "user_id" smallint unique)))
+       (field "description" (varchar (Just 50)) notNull))

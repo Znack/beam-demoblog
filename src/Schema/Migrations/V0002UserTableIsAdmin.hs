@@ -19,6 +19,12 @@ import Schema.Migrations.V0001UserAndAuthor hiding
   , User
   , UserId
   , UserT(..)
+  -- , Author
+  -- , AuthorId
+  -- , AuthorT(..)
+  -- , authorDescription
+  -- , authorId
+  -- , authorUserId
   , migration
   , userAvatar
   , userCreatedAt
@@ -69,6 +75,26 @@ deriving instance Eq (PrimaryKey UserT Identity)
 User (LensFor userId) (LensFor userFirstName) (LensFor userLastName) (LensFor userAvatar) (LensFor userCreatedAt) (LensFor userIsAdmin) =
   tableLenses
 
+--
+--
+-- AUTHOR Model
+-- data AuthorT f = Author
+--   { _authorId :: Columnar f (SqlSerial Int)
+--   , _authorDescription :: Columnar f Text
+--   , _authorUserId :: PrimaryKey UserT f
+--   } deriving (Generic, Beamable)
+-- type Author = AuthorT Identity
+-- type AuthorId = PrimaryKey AuthorT Identity
+-- deriving instance Show Author
+-- deriving instance Eq Author
+-- instance Table AuthorT where
+--   data PrimaryKey AuthorT f = AuthorId (Columnar f (SqlSerial Int))
+--                           deriving (Generic, Beamable)
+--   primaryKey = AuthorId . _authorId
+-- deriving instance Show (PrimaryKey AuthorT Identity)
+-- deriving instance Eq (PrimaryKey AuthorT Identity)
+-- Author (LensFor authorId) (LensFor authorDescription) (UserId (LensFor authorUserId)) =
+--   tableLenses
 --
 -- === DATABASE DEFINITON ===
 --
