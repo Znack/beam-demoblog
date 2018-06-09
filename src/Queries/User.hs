@@ -1,5 +1,7 @@
 module Queries.User where
 
+import Data.Text (Text)
+
 import Database.Beam
 import Database.Beam.Backend.SQL
 import Database.Beam.Postgres
@@ -17,5 +19,14 @@ getAll = queryGetAll _user
 getById :: Int -> Pg (Maybe User)
 getById = queryGetByPK _user UserId
 
-createUser :: User -> Pg (Maybe User)
-createUser = create _user
+createUser :: Text -> Maybe Text -> Maybe Text -> Bool -> Pg (Maybe User)
+createUser fName lName avatar isAdmin =
+  createFromExpr
+    _user
+    (User
+       default_
+       (val_ fName)
+       (val_ lName)
+       (val_ avatar)
+       currentTimestamp_
+       (val_ isAdmin))

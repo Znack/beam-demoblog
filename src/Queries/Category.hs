@@ -1,5 +1,7 @@
 module Queries.Category where
 
+import Data.Text (Text)
+
 import Database.Beam
 import Database.Beam.Backend.SQL
 import Database.Beam.Postgres
@@ -18,5 +20,11 @@ getAll = queryGetAll _category
 getById :: Int -> Pg (Maybe (CategoryT Identity))
 getById = queryGetByPK _category CategoryId
 
-createCategory :: Category -> Pg (Maybe (CategoryT Identity))
-createCategory = create _category
+createCategory :: Text -> Maybe Int -> Pg (Maybe (CategoryT Identity))
+createCategory title parentId =
+  createFromExpr
+    _category
+    (Category
+       default_
+       (val_ title)
+       (CategoryId (val_ $ fromIntegral <$> parentId)))

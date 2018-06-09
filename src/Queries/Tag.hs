@@ -1,5 +1,7 @@
 module Queries.Tag where
 
+import Data.Text (Text)
+
 import Database.Beam
 import Database.Beam.Backend.SQL
 import Database.Beam.Postgres
@@ -18,5 +20,5 @@ getAll = queryGetAll _tag
 getById :: Int -> Pg (Maybe (TagT Identity))
 getById = queryGetByPK _tag TagId
 
-createTag :: Tag -> Pg (Maybe (TagT Identity))
-createTag = create _tag
+createTag :: Text -> Pg (Maybe (TagT Identity))
+createTag title = createFromExpr _tag (Tag default_ (val_ title))

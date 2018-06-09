@@ -1,3 +1,5 @@
+{-# LANGUAGE RankNTypes #-}
+
 module Queries.Generic.Create where
 
 import Data.Maybe (listToMaybe)
@@ -14,7 +16,7 @@ import GHC.Generics
 import RunDB
 import Schema.Database
 
-runQuery ::
+runQueryFromValues ::
      ( Table table
      , FromBackendRow Postgres (table Identity)
      , FieldsFulfillConstraint (HasSqlValueSyntax PgValueSyntax) table
@@ -22,11 +24,11 @@ runQuery ::
   => TableSelector table
   -> table Identity
   -> Pg [table Identity]
-runQuery table entity =
+runQueryFromValues table entity =
   BeamExtensions.runInsertReturningList (table db) $
   insertExpressions [val_ entity]
 
-create ::
+createFromValues ::
      ( Table table
      , FromBackendRow Postgres (table Identity)
      , FieldsFulfillConstraint (HasSqlValueSyntax PgValueSyntax) table
@@ -34,4 +36,25 @@ create ::
   => TableSelector table
   -> table Identity
   -> Pg (Maybe (table Identity))
-create table entity = listToMaybe <$> runQuery table entity
+createFromValues table entity = listToMaybe <$> runQueryFromValues table entity
+
+runQueryFromExpr ::
+     ( Table table
+     , FromBackendRow Postgres (table Identity)
+     , FieldsFulfillConstraint (HasSqlValueSyntax PgValueSyntax) table
+     )
+  => TableSelector table
+  -> (forall s. table (QExpr PgExpressionSyntax s))
+  -> Pg [table Identity]
+runQueryFromExpr table entity =
+  BeamExtensions.runInsertReturningList (table db) $ insertExpressions [entity]
+
+createFromExpr ::
+     ( Table table
+     , FromBackendRow Postgres (table Identity)
+     , FieldsFulfillConstraint (HasSqlValueSyntax PgValueSyntax) table
+     )
+  => TableSelector table
+  -> (forall s. table (QExpr PgExpressionSyntax s))
+  -> Pg (Maybe (table Identity))
+createFromExpr table entity = listToMaybe <$> runQueryFromExpr table entity
