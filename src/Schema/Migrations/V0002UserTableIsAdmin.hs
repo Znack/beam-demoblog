@@ -4,6 +4,7 @@
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE PartialTypeSignatures #-}
 {-# LANGUAGE ImpredicativeTypes #-}
+{-# LANGUAGE TypeApplications #-}
 
 module Schema.Migrations.V0002UserTableIsAdmin
   ( module Schema.Migrations.V0001UserAndAuthor
@@ -14,11 +15,17 @@ import qualified Schema.Migrations.V0001UserAndAuthor as V0001 hiding
   ( PrimaryKey(UserId)
   )
 import Schema.Migrations.V0001UserAndAuthor hiding
-  ( DemoblogDb(..)
+  ( Author
+  , AuthorId
+  , AuthorT(..)
+  , DemoblogDb(..)
   , PrimaryKey(UserId)
   , User
   , UserId
   , UserT(..)
+  , authorDescription
+  , authorId
+  , authorUserId
   , migration
   , userAvatar
   , userCreatedAt
@@ -70,6 +77,34 @@ User (LensFor userId) (LensFor userFirstName) (LensFor userLastName) (LensFor us
   tableLenses
 
 --
+--
+-- AUTHOR Model
+data AuthorT f = Author
+  { _authorId :: Columnar f (SqlSerial Int)
+  , _authorDescription :: Columnar f Text
+  , _authorUserId :: PrimaryKey UserT f
+  } deriving (Generic, Beamable)
+
+type Author = AuthorT Identity
+
+type AuthorId = PrimaryKey AuthorT Identity
+
+deriving instance Show Author
+
+deriving instance Eq Author
+
+instance Table AuthorT where
+  data PrimaryKey AuthorT f = AuthorId (Columnar f (SqlSerial Int))
+                          deriving (Generic, Beamable)
+  primaryKey = AuthorId . _authorId
+
+deriving instance Show (PrimaryKey AuthorT Identity)
+
+deriving instance Eq (PrimaryKey AuthorT Identity)
+
+Author (LensFor authorId) (LensFor authorDescription) (UserId (LensFor authorUserId)) =
+  tableLenses
+
 -- === DATABASE DEFINITON ===
 --
 data DemoblogDb f = DemoblogDb
@@ -79,11 +114,13 @@ data DemoblogDb f = DemoblogDb
 
 instance Database Postgres DemoblogDb
 
+currentDb :: CheckedDatabaseSettings Postgres DemoblogDb
+currentDb = defaultMigratableDbSettings @PgCommandSyntax
+
 migration ::
      CheckedDatabaseSettings Postgres V0001.DemoblogDb
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
-migration oldDb =
-  DemoblogDb <$> alterUserTable <*> preserve (V0001._author oldDb)
+migration oldDb = DemoblogDb <$> alterUserTable <*> preserve (_author currentDb)
   where
     alterUserTable = alterTable (V0001._user oldDb) tableMigration
     tableMigration oldTable =
