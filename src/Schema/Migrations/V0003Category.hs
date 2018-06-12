@@ -65,7 +65,7 @@ Category (LensFor categoryId) (LensFor categoryTitle) (CategoryId (LensFor categ
 --
 data DemoblogDb f = DemoblogDb
   { _user :: f (TableEntity V0002.UserT)
-  , _author :: f (TableEntity V0002.AuthorT)
+  , _author :: f (TableEntity (V0002.AuthorT UserT))
   , _category :: f (TableEntity CategoryT)
   } deriving (Generic)
 

@@ -30,7 +30,7 @@ data PostT f = Post
   { _postId :: Columnar f (SqlSerial Int)
   , _postTitle :: Columnar f Text
   , _postContent :: Columnar f Text
-  , _postAuthor :: PrimaryKey AuthorT f
+  , _postAuthor :: PrimaryKey (AuthorT UserT) f
   } deriving (Generic, Beamable)
 
 type Post = PostT Identity
@@ -62,7 +62,7 @@ Post (LensFor postId) (LensFor postTitle) (LensFor postContent) (V0004.AuthorId 
 --
 data DemoblogDb f = DemoblogDb
   { _user :: f (TableEntity V0004.UserT)
-  , _author :: f (TableEntity V0004.AuthorT)
+  , _author :: f (TableEntity (V0004.AuthorT UserT))
   , _category :: f (TableEntity V0004.CategoryT)
   , _tag :: f (TableEntity V0004.TagT)
   , _post :: f (TableEntity PostT)

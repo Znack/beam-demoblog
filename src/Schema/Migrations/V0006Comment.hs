@@ -61,7 +61,7 @@ Comment (LensFor commentId) (LensFor commentContent) (V0005.UserId (LensFor comm
 --
 data DemoblogDb f = DemoblogDb
   { _user :: f (TableEntity V0005.UserT)
-  , _author :: f (TableEntity V0005.AuthorT)
+  , _author :: f (TableEntity (V0005.AuthorT UserT))
   , _category :: f (TableEntity V0005.CategoryT)
   , _tag :: f (TableEntity V0005.TagT)
   , _post :: f (TableEntity V0005.PostT)

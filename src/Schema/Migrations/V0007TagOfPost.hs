@@ -61,12 +61,12 @@ TagOfPost (LensFor tagOfPostId) (PostId (LensFor tagOfPostPostId)) (TagId (LensF
 -- === DATABASE DEFINITON ===
 --
 data DemoblogDb f = DemoblogDb
-  { _user :: f (TableEntity UserT)
-  , _author :: f (TableEntity AuthorT)
-  , _category :: f (TableEntity CategoryT)
-  , _tag :: f (TableEntity TagT)
-  , _post :: f (TableEntity PostT)
-  , _comment :: f (TableEntity CommentT)
+  { _user :: f (TableEntity V0006.UserT)
+  , _author :: f (TableEntity (V0006.AuthorT UserT))
+  , _category :: f (TableEntity V0006.CategoryT)
+  , _tag :: f (TableEntity V0006.TagT)
+  , _post :: f (TableEntity V0006.PostT)
+  , _comment :: f (TableEntity V0006.CommentT)
   , _tagOfPost :: f (TableEntity TagOfPostT)
   } deriving (Generic)
 

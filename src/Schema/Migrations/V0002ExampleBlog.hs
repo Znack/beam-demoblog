@@ -57,24 +57,25 @@ instance Database Postgres DemoblogDb
 currentDb :: CheckedDatabaseSettings Postgres DemoblogDb
 currentDb = defaultMigratableDbSettings @PgCommandSyntax
 
-migration ::
+currentMigration ::
      CheckedDatabaseSettings Postgres V0001.DemoblogDb
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
-migration oldDb = DemoblogDb <$> alterUserTable <*> preserve (_post currentDb)
+currentMigration oldDb =
+  DemoblogDb <$> alterUserTable <*> preserve (_post currentDb)
   where
     alterUserTable = alterTable (V0001._user oldDb) tableMigration
     tableMigration oldTable =
       User (V0001._userId oldTable) (V0001._userName oldTable) <$>
       addColumn (field "created_at" timestamptz (defaultTo_ now_) notNull)
 
+migration ::
+     MigrationSteps PgCommandSyntax () (CheckedDatabaseSettings Postgres DemoblogDb)
+migration =
+  migrationStep "Add user and post tables" V0001.migration >>>
+  migrationStep "Add field created_at to user table" currentMigration
+
 db :: DatabaseSettings Postgres DemoblogDb
-db = unCheckDatabase (evaluateDatabase migrations)
-  where
-    migrations ::
-         MigrationSteps PgCommandSyntax () (CheckedDatabaseSettings Postgres DemoblogDb)
-    migrations =
-      migrationStep "Add user and post tables" V0001.migration >>>
-      migrationStep "Add field created_at to user table" migration
+db = unCheckDatabase (evaluateDatabase migration)
 
 createPost content userId =
   BeamExtensions.runInsertReturningList (_post db) $

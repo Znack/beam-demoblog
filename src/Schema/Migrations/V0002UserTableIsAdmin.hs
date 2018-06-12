@@ -17,17 +17,11 @@ import qualified Schema.Migrations.V0001UserAndAuthor as V0001 hiding
   ( PrimaryKey(UserId)
   )
 import Schema.Migrations.V0001UserAndAuthor hiding
-  ( Author
-  , AuthorId
-  , AuthorT(..)
-  , DemoblogDb(..)
+  ( DemoblogDb(..)
   , PrimaryKey(UserId)
   , User
   , UserId
   , UserT(..)
-  , authorDescription
-  , authorId
-  , authorUserId
   , migration
   , userAvatar
   , userCreatedAt
@@ -79,40 +73,11 @@ deriving instance Eq (PrimaryKey UserT Identity)
 User (LensFor userId) (LensFor userFirstName) (LensFor userLastName) (LensFor userAvatar) (LensFor userCreatedAt) (LensFor userIsAdmin) =
   tableLenses
 
---
---
--- AUTHOR Model
-data AuthorT f = Author
-  { _authorId :: Columnar f (SqlSerial Int)
-  , _authorDescription :: Columnar f Text
-  , _authorUserId :: PrimaryKey UserT f
-  } deriving (Generic, Beamable)
-
-type Author = AuthorT Identity
-
-type AuthorId = PrimaryKey AuthorT Identity
-
-deriving instance Show Author
-
-deriving instance Eq Author
-
-instance Table AuthorT where
-  data PrimaryKey AuthorT f = AuthorId (Columnar f (SqlSerial Int))
-                          deriving (Generic, Beamable)
-  primaryKey = AuthorId . _authorId
-
-deriving instance Show (PrimaryKey AuthorT Identity)
-
-deriving instance Eq (PrimaryKey AuthorT Identity)
-
-Author (LensFor authorId) (LensFor authorDescription) (UserId (LensFor authorUserId)) =
-  tableLenses
-
 -- === DATABASE DEFINITON ===
 --
 data DemoblogDb f = DemoblogDb
   { _user :: f (TableEntity UserT)
-  , _author :: f (TableEntity AuthorT)
+  , _author :: f (TableEntity (V0001.AuthorT UserT))
   } deriving (Generic)
 
 instance Database Postgres DemoblogDb

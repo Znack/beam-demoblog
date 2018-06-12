@@ -13,13 +13,13 @@ import Queries.Generic.GetById
 import RunDB
 import Schema.Database
 
-getAll :: Pg [AuthorT Identity]
+getAll :: Pg [AuthorT UserT Identity]
 getAll = queryGetAll _author
 
-getById :: Int -> Pg (Maybe (AuthorT Identity))
+getById :: Int -> Pg (Maybe (AuthorT UserT Identity))
 getById = queryGetByPK _author AuthorId
 
-createAuthor :: Text -> Int -> Pg (Maybe (AuthorT Identity))
+createAuthor :: Text -> Int -> Pg (Maybe (AuthorT UserT Identity))
 createAuthor description userId =
   createFromExpr
     _author

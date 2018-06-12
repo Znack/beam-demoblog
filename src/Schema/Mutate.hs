@@ -13,8 +13,8 @@ import Database.Beam.Postgres.Migrate
 import Database.Beam.Postgres.Syntax
 import qualified Database.PostgreSQL.Simple as Pg
 
-import Schema.Database
 import qualified Schema.Migrations.V0001UserAndAuthor as V0001
+import Schema.Migrations.V0002ExampleBlog
 import qualified Schema.Migrations.V0002UserTableIsAdmin as V0002
 import qualified Schema.Migrations.V0003Category as V0003
 

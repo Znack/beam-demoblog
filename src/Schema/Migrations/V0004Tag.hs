@@ -59,7 +59,7 @@ Tag (LensFor tagId) (LensFor tagTitle) = tableLenses
 --
 data DemoblogDb f = DemoblogDb
   { _user :: f (TableEntity V0003.UserT)
-  , _author :: f (TableEntity V0003.AuthorT)
+  , _author :: f (TableEntity (V0003.AuthorT UserT))
   , _category :: f (TableEntity V0003.CategoryT)
   , _tag :: f (TableEntity TagT)
   } deriving (Generic)
