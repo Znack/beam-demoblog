@@ -36,7 +36,7 @@ printMigration conn = do
 verboseHooks :: BringUpToDateHooks Pg
 verboseHooks =
   BringUpToDateHooks
-  { runIrreversibleHook = pure False
+  { runIrreversibleHook = pure True
   , startStepHook =
       \a b -> liftIO (print $ "startStepHook N" ++ show a ++ ": " ++ show b)
   , endStepHook =

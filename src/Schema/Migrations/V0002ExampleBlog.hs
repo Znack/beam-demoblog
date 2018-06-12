@@ -71,11 +71,10 @@ db = unCheckDatabase (evaluateDatabase migrations)
     migrations =
       migrationStep "Add user and post tables" V0001.migration >>>
       migrationStep "Add field created_at to user table" migration
-
-createPost content userId =
-  BeamExtensions.runInsertReturningList (_post db) $
-  insertExpressions
-    [Post default_ (val_ content) (UserId $ fromIntegral userId)]
+-- createPost content userId =
+--   BeamExtensions.runInsertReturningList (_post db) $
+--   insertExpressions
+--     [Post default_ (val_ content) (UserId $ fromIntegral userId)]
 -- Couldn't match type ‘UserT’
 --                 with ‘V0001.UserT’
 -- NB: ‘V0001.UserT’ is defined at
