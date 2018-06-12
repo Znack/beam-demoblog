@@ -4,6 +4,7 @@
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE PartialTypeSignatures #-}
 {-# LANGUAGE ImpredicativeTypes #-}
+{-# LANGUAGE TypeApplications #-}
 
 module Schema.Migrations.V0002ExampleBlog
   ( module Schema.Migrations.V0001ExampleBlog
@@ -48,15 +49,18 @@ instance Table UserT where
 --
 data DemoblogDb f = DemoblogDb
   { _user :: f (TableEntity UserT)
-  , _post :: f (TableEntity PostT)
+  , _post :: f (TableEntity (PostT UserT))
   } deriving (Generic)
 
 instance Database Postgres DemoblogDb
 
+currentDb :: CheckedDatabaseSettings Postgres DemoblogDb
+currentDb = defaultMigratableDbSettings @PgCommandSyntax
+
 migration ::
      CheckedDatabaseSettings Postgres V0001.DemoblogDb
   -> Migration PgCommandSyntax (CheckedDatabaseSettings Postgres DemoblogDb)
-migration oldDb = DemoblogDb <$> alterUserTable <*> preserve (V0001._post oldDb)
+migration oldDb = DemoblogDb <$> alterUserTable <*> preserve (_post currentDb)
   where
     alterUserTable = alterTable (V0001._user oldDb) tableMigration
     tableMigration oldTable =
@@ -71,18 +75,8 @@ db = unCheckDatabase (evaluateDatabase migrations)
     migrations =
       migrationStep "Add user and post tables" V0001.migration >>>
       migrationStep "Add field created_at to user table" migration
--- createPost content userId =
---   BeamExtensions.runInsertReturningList (_post db) $
---   insertExpressions
---     [Post default_ (val_ content) (UserId $ fromIntegral userId)]
--- Couldn't match type ‘UserT’
---                 with ‘V0001.UserT’
--- NB: ‘V0001.UserT’ is defined at
---       /private/var/folders/hl/7t2d8v_d1yj8m47m11_58lx40000gn/T/ghc-mod44393/V0001ExampleBlog44392-39.hs:(18,1)-(21,32)
---     ‘UserT’ is defined at
---       /private/var/folders/hl/7t2d8v_d1yj8m47m11_58lx40000gn/T/ghc-mod44393/V0002ExampleBlog44392-219.hs:(35,1)-(39,32)
--- Expected type: PrimaryKey
---                   V0001.UserT
---                   (QExpr Database.Beam.Postgres.Syntax.PgExpressionSyntax s')
---   Actual type: PrimaryKey
---                   UserT (QExpr Database.Beam.Postgres.Syntax.PgExpressionSyntax s')
+
+createPost content userId =
+  BeamExtensions.runInsertReturningList (_post db) $
+  insertExpressions
+    [Post default_ (val_ content) (UserId $ fromIntegral userId)]

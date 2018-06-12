@@ -3,17 +3,19 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE PartialTypeSignatures #-}
-{-# LANGUAGE ImpredicativeTypes #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 module Schema.Migrations.V0001ExampleBlog where
 
 import Data.Text (Text)
 import Data.Time (LocalTime)
+import GHC.Generics
 
 import Database.Beam
 import Database.Beam.Backend.SQL.Types (SqlSerial)
 import Database.Beam.Migrate
 import Database.Beam.Postgres
+import Database.Beam.Schema.Tables
 
 data UserT f = User
   { _userId :: Columnar f (SqlSerial Int)
@@ -25,15 +27,18 @@ instance Table UserT where
                         deriving (Generic, Beamable)
   primaryKey = UserId . _userId
 
-data PostT f = Post
+data PostT user f = Post
   { _postId :: Columnar f (SqlSerial Int)
   , _postContent :: Columnar f Text
-  , _postAuthor :: PrimaryKey UserT f
-  } deriving (Generic, Beamable)
+  , _postAuthor :: PrimaryKey user f
+  } deriving (Generic)
 
-instance Table PostT where
-  data PrimaryKey PostT f = PostId (Columnar f (SqlSerial Int))
-                        deriving (Generic, Beamable)
+instance (Beamable (PrimaryKey user)) => Beamable (PostT user)
+
+instance (Typeable user, Beamable (PrimaryKey user)) => Table (PostT user) where
+  data PrimaryKey (PostT user) f = PostId (Columnar f
+                                           (SqlSerial Int))
+                               deriving (Generic, Beamable)
   primaryKey = PostId . _postId
 
 --
@@ -41,7 +46,7 @@ instance Table PostT where
 --
 data DemoblogDb f = DemoblogDb
   { _user :: f (TableEntity UserT)
-  , _post :: f (TableEntity PostT)
+  , _post :: f (TableEntity (PostT UserT))
   } deriving (Generic)
 
 instance Database Postgres DemoblogDb

@@ -27,7 +27,6 @@ dependencies:
 - mtl
 - lens
 - beam-core
-- beam-sqlite
 - sqlite-simple
 - beam-migrate
 - beam-postgres
